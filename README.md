@@ -82,7 +82,7 @@ My images are stored on the following repositories:
 | Service  | Repository                                                                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Frontend | [https://hub.docker.com/repository/docker/aminerachyd/frontend-newsweather](https://hub.docker.com/repository/docker/aminerachyd/frontend-newsweather) |
-| News     | [https://hub.docker.com/repository/docker/aminerachyd/service-news](https://hub.docker.com/repository/docker/amineracyd/service-news)                  |
+| News     | [https://hub.docker.com/repository/docker/aminerachyd/service-news](https://hub.docker.com/repository/docker/aminerachyd/service-news)                 |
 | Weather  | [https://hub.docker.com/repository/docker/aminerachyd/service-weather](https://hub.docker.com/repository/docker/aminerachyd/service-weather)           |
 
 ### Deploying the application
