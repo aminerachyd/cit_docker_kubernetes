@@ -8,7 +8,7 @@ Slides available [here](https://docs.google.com/presentation/d/11uHk67KspMAkXE_b
 
 ## Demo 1 - Discovering Docker
 
-Taking a small NodeJS server and packaging it as a Docker container, then running it locally.
+Taking a small Node.js server and packaging it as a Docker container, then running it locally.
 
 To build and run the Docker container:
 
@@ -59,6 +59,8 @@ You can delete the containers by running `docker-compose down`.
 
 ## Demo 3 - Playing around with Kubernetes
 
+### Cluster setup
+
 **The Kubernetes cluster used here is provisioned on Google Cloud.**
 
 You can setup a local cluster **for testing purposes** using [Docker Desktop](https://docs.docker.com/desktop/kubernetes/), [Minikube](https://minikube.sigs.k8s.io/docs/start/) or [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
@@ -66,6 +68,24 @@ You can setup a local cluster **for testing purposes** using [Docker Desktop](ht
 To provision the cluster on Google Cloud, either use the Google Cloud Console, or use the Terraform script provided in `demo3/gke_cluster_terraform`.
 
 The script will create a managed cluster with 5 nodes (4 CPU/16 RAM), uses about 1$ per hour.
+
+### The microserivces
+
+We will use the same application as in demo 2, but in order to deploy it on Kubernetes, the Docker containers need to be stored somewhere the cluster can access them.
+
+We use a **container registry** to store the containers, think of if as GitHub for containers.
+
+One famous container registry is [Docker Hub](https://hub.docker.com/).  
+After you build images (with a specific tag) you can push them to Docker Hub and pull them from anywhere.  
+My images are stored on the following repositories:
+
+| Service  | Repository                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Frontend | [https://hub.docker.com/repository/docker/aminerachyd/frontend-newsweather](https://hub.docker.com/repository/docker/aminerachyd/frontend-newsweather) |
+| News     | [https://hub.docker.com/repository/docker/aminerachyd/service-news](https://hub.docker.com/repository/docker/amineracyd/service-news)                  |
+| Weather  | [https://hub.docker.com/repository/docker/aminerachyd/service-weather](https://hub.docker.com/repository/docker/aminerachyd/service-weather)           |
+
+### Deploying the application
 
 To deploy the application on the cluster, first deploy the backend services:
 
@@ -102,4 +122,39 @@ To delete the application, simply delete the namespace:
 
 ```bash
 kubectl delete -f namespace.yaml
+```
+
+### Enabling autoscaling
+
+One key feature of Kubernetes is the ability to scale up and down the number of containers running in the cluster, depending on the load. This is referred to as **autoscaling**.
+
+We can enable autoscaling for the news service for instance, by running:
+
+```bash
+kubectl autoscale deployment news --cpu-percent=10 --min=1 --max=10
+```
+
+This will scale the number of containers(pods) from 1 to 10 as soon as the CPU usage of the service reaches 10% (which is kind of low but we're doing it for expertimentation).
+
+Once the service gets more traffic, you will see the number of its replicas increase.
+
+### Simulating a crash
+
+Another feature of Kubernetes is its ability to detect node crashes and move the containers to healthy nodes.
+
+We can simulate by either deleting the node (removing the VM in Google Cloud), or by shutting it down.
+
+Another way to simulate a crash is to stop the kubelet service on the node, which will cause the node to be marked as `NotReady`.  
+This can be done by running (inside of the VM):
+
+```bash
+sudo systemctl stop kubelet
+```
+
+After a few seconds, the node will be marked as NotReady if you run `kubectl get nodes`.
+
+Few minutes later, all the containers running on the node will be moved to other nodes. We can see this by running (before and after the crash):
+
+```bash
+kubectl get pods -o wide
 ```
