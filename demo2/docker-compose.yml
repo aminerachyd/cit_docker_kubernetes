@@ -1,0 +1,23 @@
+services:
+  news:
+    container_name: news
+    image: aminerachyd/service-news
+    ports:
+      - "8081:8080"
+
+  weather:
+    container_name: weather
+    image: aminerachyd/service-weather
+    ports:
+      - "8082:8080"
+
+  frontend:
+    image: aminerachyd/frontend-newsweather
+    ports:
+      - "8080:80"
+    depends_on:
+      - news
+      - weather
+    environment:
+      - NEWS_ENDPOINT=http://localhost:8081/news
+      - WEATHER_ENDPOINT=http://localhost:8082/weather

@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 
 const NEWS_ENDPOINT = "http://localhost:8080/news";
-const News = () => {
+const News = ({ newsEndpoint }) => {
+  const [hostname, setHostname] = useState("");
   const [news, setNews] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(NEWS_ENDPOINT)
+    fetch(
+      (process.env.NODE_ENV === "production" && newsEndpoint) || NEWS_ENDPOINT
+    )
       .then((response) => response.json())
       .then((data) => {
-        setNews(data);
+        setNews(data.news);
+        setHostname(data.hostname);
       })
       .catch((error) => {
         setError(error);
@@ -18,7 +22,7 @@ const News = () => {
 
   return (
     <div>
-      <h2>News</h2>
+      <h2>News, from {hostname}</h2>
       {error && <p>{error.message}</p>}
       {news.map((article) => (
         <div key={article.id}>

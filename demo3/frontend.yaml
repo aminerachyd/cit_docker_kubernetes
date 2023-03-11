@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: cit-inpt
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      tolerations:
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 10
+        - key: node.kubernetes.io/unreachable
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 10
+      containers:
+        - name: frontend
+          image: docker.io/aminerachyd/frontend-newsweather:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NEWS_ENDPOINT
+              value: http://35.241.240.138:8081/news # Replace with news public addr
+            - name: WEATHER_ENDPOINT
+              value: http://104.155.29.104:8082/weather # Replace with weather public addr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: cit-inpt
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+  type: LoadBalancer
