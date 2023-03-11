@@ -1,8 +1,8 @@
 #!/bin/bash
 
 FRONTEND_PORT=8080
-WEATHER_PORT=8081
-NEWS_PORT=8082
+NEWS_PORT=8081
+WEATHER_PORT=8082
 
 echo "Launching weather service on port $WEATHER_PORT"
 docker run --rm -d -p $WEATHER_PORT:8080 aminerachyd/service-weather
