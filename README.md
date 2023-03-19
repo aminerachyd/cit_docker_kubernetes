@@ -124,7 +124,7 @@ To delete the application, simply delete the namespace:
 kubectl delete -f namespace.yaml
 ```
 
-### Enabling autoscaling
+### Elasticity : Enabling autoscaling
 
 One key feature of Kubernetes is the ability to scale up and down the number of containers running in the cluster, depending on the load. This is referred to as **autoscaling**.
 
@@ -138,7 +138,7 @@ This will scale the number of containers(pods) from 1 to 10 as soon as the CPU u
 
 Once the service gets more traffic, you will see the number of its replicas increase.
 
-### Simulating a crash
+### Fault tolerance : Simulating a node crash
 
 Another feature of Kubernetes is its ability to detect node crashes and move the containers to healthy nodes.
 
