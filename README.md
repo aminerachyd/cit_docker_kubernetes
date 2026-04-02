@@ -1,10 +1,8 @@
-# Lecture about Docker and Kubernetes for the CIT INPT club
+# Lecture about Docker and Kubernetes
 
 This lecture is intended as a general introduction about Docker and Kubernetes and **is in no way a complete guide to the subject**. It it acts as a showcase to what is possible to achieve with these technologies.
 
 You will need [Docker](https://www.docker.com/products/docker-desktop) and [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) installed
-
-Slides available [here](https://docs.google.com/presentation/d/11uHk67KspMAkXE_bnRBfwzrP3WqTBzsz4OSjvoVevHQ/edit?usp=sharing)
 
 ## Demo 1 - Discovering Docker
 
@@ -28,7 +26,7 @@ The application is composed of a frontend and two backend services, the backend 
 
 The backend services both bind to the same port on localhost (8080) so they can't be run at the same time.
 
-Instead we package them as a Docker container. Each containers acts as a _small_ virtual machine, with its own filesystem and **network stack**.
+Instead we package them as a Docker container. Each containers acts as a _small virtual machine_ (but this is not true! [containers are not virtual machines](https://www.docker.com/blog/containers-are-not-vms/)), with its own filesystem and **network stack**.
 We can map internal ports of the container to external ports of the host machine. This way we can run multiple containers regardless of the ports they use.
 
 The table resumes the different services and the ports they use:
@@ -92,7 +90,7 @@ To deploy the application on the cluster, first deploy the backend services:
 ```bash
 cd demo3
 kubectl apply -f namespace.yaml
-kubectl config set-context --current --namespace=cit-inpt
+kubectl config set-context --current --namespace=demo-namespace
 kubectl apply -f news.yaml && kubectl apply -f weather.yaml
 ```
 

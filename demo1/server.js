@@ -9,6 +9,14 @@ app.get("/",(req,res)=> {
   res.send(hello_response);
 })
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log("Started server on port 3000");
+});
+
+process.on('SIGINT', () => {
+  console.log("Received SIGINT, closing server");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
 });
